@@ -21,7 +21,7 @@ def convert_to_mbps(bits_sec):
 def formatted_time():
     timestamp = time.time()
     value = datetime.datetime.fromtimestamp(timestamp)
-    return value.strftime('%Y-%m-%d %H:%M:%S')
+    return value.strftime('%Y-%m-%d %I:%M:%S %p')
 
 
 def convert_for_human(speedtest_results):
@@ -38,12 +38,12 @@ def convert_for_human(speedtest_results):
 
 
 def send_speedtest_results(results):
-    slack_token = os.environ["SLACK_API_TOKEN"]
+    slack_token = os.environ['SLACK_API_TOKEN']
     sc = SlackClient(slack_token)
 
     sc.api_call(
         "chat.postMessage",
-        channel="C0XXXXXX",
+        channel="#general",
         text="SpeedTest Results ({})\nDownload: {} (Mbps)\nUpload: {} (Mbps)\n\n".format(
             formatted_time(),
             results['download'],
@@ -54,5 +54,4 @@ def send_speedtest_results(results):
 
 speedtest_results = do_speedtest()
 speedtest_results = convert_for_human(speedtest_results)
-print(formatted_time())
-print(speedtest_results)
+send_speedtest_results(speedtest_results)
